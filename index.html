@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J&V MÁQUINAS - Locação, Conserto e Venda.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.8s ease-in-out;
+        }
+        .carousel-slide {
+            min-width: 100%;
+            flex-shrink: 0;
+        }
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(59, 130, 246, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 2px;
+        }
+        .indicator.active {
+            background-color: rgb(59, 130, 246);
+            transform: scale(1.2);
+        }
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background-color: rgb(59, 130, 246);
+            transition: width 0.1s linear;
+            z-index: 10;
+        }
+        .carousel-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 20;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            padding: 8px md:12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel-nav-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .carousel-nav-btn.prev {
+            left: 16px;
+        }
+        .carousel-nav-btn.next {
+            right: 16px;
+        }
+        @media (max-width: 768px) {
+            .carousel-nav-btn {
+                width: 36px;
+                height: 36px;
+                padding: 6px;
+            }
+            .indicator {
+                width: 8px;
+                height: 8px;
+            }
+            .carousel-nav-btn.prev {
+                left: 8px;
+            }
+            .carousel-nav-btn.next {
+                right: 8px;
+            }
+        }
+        .loading-placeholder {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .error-image {
+            background-color: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Hero Section com slideshow automático -->
+    <section class="relative h-64 md:h-80 lg:h-96 flex items-center overflow-hidden">
+        <div class="carousel-container w-full h-full">
+            <div class="carousel-track" id="heroCarousel">
+                <!-- As imagens serão carregadas dinamicamente pelo JavaScript -->
+            </div>
+            <button class="carousel-nav-btn prev" onclick="changeSlide('heroCarousel', -1)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carousel-nav-btn next" onclick="changeSlide('heroCarousel', 1)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <div class="progress-bar" id="heroProgress"></div>
+        </div>
+    </section>
+
+    <!-- Barra de contatos flutuante -->
+    <div class="fixed bottom-6 right-6 z-40 space-y-3">
+        <a href="https://wa.me/5521964304240" target="_blank" class="flex items-center justify-center w-14 h-14 bg-green-500 text-white rounded-full shadow-xl hover:bg-green-600 transition-all hover:scale-110">
+            <i class="fab fa-whatsapp text-xl"></i>
+        </a>
+        <a href="https://instagram.com/jvmaquin17" target="_blank" class="flex items-center justify-center w-14 h-14 bg-pink-500 text-white rounded-full shadow-xl hover:bg-pink-600 transition-all hover:scale-110">
+            <i class="fab fa-instagram text-xl"></i>
+        </a>
+        <a href="https://www.facebook.com/JonathasValis" target="_blank" class="flex items-center justify-center w-14 h-14 bg-blue-600 text-white rounded-full shadow-xl hover:bg-blue-700 transition-all hover:scale-110">
+            <i class="fab fa-facebook-f text-xl"></i>
+        </a>
+    </div>
+
+    <!-- Locação de Marteletes -->
+    <section id="locacao" class="py-20 bg-white">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <div class="text-center mb-12 fade-in">
+                <h2 class="text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-4">ALUGUEL DE MARTELETES</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
+                    <div class="bg-gradient-to-br from-cyan-50 to-blue-100 p-8 rounded-xl text-center border border-cyan-200 shadow-lg">
+                        <div class="bg-gradient-to-r from-cyan-500 to-blue-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                            <i class="fas fa-dollar-sign text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-4">ECONOMIA</h3>
+                        <p class="text-slate-600 leading-relaxed">Pague apenas o tempo que for utilizar, sem se preocupar com a manutenção.</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-emerald-50 to-teal-100 p-8 rounded-xl text-center border border-emerald-200 shadow-lg">
+                        <div class="bg-gradient-to-r from-emerald-500 to-teal-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                            <i class="fas fa-tools text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-4">SEM MANUTENÇÃO</h3>
+                        <p class="text-slate-600 leading-relaxed">Equipamentos sempre revisados e prontos para uso, Problemas técnicos são nossa responsabilidade.</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-violet-50 to-purple-100 p-8 rounded-xl text-center border border-violet-200 shadow-lg">
+                        <div class="bg-gradient-to-r from-violet-500 to-purple-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                            <i class="fas fa-clock text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-4">PRATICIDADE</h3>
+                        <p class="text-slate-600 leading-relaxed">Use quando precisar, devolva quando terminar.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carrossel Principal com indicadores -->
+            <div class="carousel-container mb-16 rounded-xl overflow-hidden shadow-2xl mx-4">
+                <div class="carousel-track" id="mainCarousel">
+                    <!-- As imagens serão carregadas dinamicamente pelo JavaScript -->
+                </div>
+                <button class="carousel-nav-btn prev" onclick="changeSlide('mainCarousel', -1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-nav-btn next" onclick="changeSlide('mainCarousel', 1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <div class="carousel-indicators" id="mainIndicators"></div>
+                <div class="progress-bar" id="mainProgress"></div>
+            </div>
+
+            <!-- Grid responsivo de marteletes -->
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold bg-gradient-to-r from-slate-700 to-slate-500 bg-clip-text text-transparent">NOSSOS MARTELETES</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-4" id="martelosGrid">
+                <!-- Os marteletes serão gerados automaticamente pelo JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Conserto -->
+    <section id="conserto" class="py-20 bg-gradient-to-br from-slate-50 to-gray-100">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-8">CONSERTOS</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
+                    <div class="bg-gradient-to-br from-rose-50 to-pink-100 p-8 rounded-xl text-center border border-rose-200 shadow-lg">
+                        <div class="bg-gradient-to-r from-rose-500 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                            <i class="fas fa-wrench text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-4">ESPECIALISTAS</h3>
+                        <p class="text-slate-600 leading-relaxed">Técnicos especializados com e experiência em diversas marcas e modelos.</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-indigo-50 to-purple-100 p-8 rounded-xl text-center border border-indigo-200 shadow-lg">
+                        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                            <i class="fas fa-shield-alt text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-4">GARANTIA</h3>
+                        <p class="text-slate-600 leading-relaxed"></p>consertos com garantia.</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-teal-50 to-cyan-100 p-8 rounded-xl text-center border border-teal-200 shadow-lg">
+                        <div class="bg-gradient-to-r from-teal-500 to-cyan-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                            <i class="fas fa-tachometer-alt text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-4">RAPIDEZ</h3>
+                        <p class="text-slate-600 leading-relaxed">Orçamento em 72 horas.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-container rounded-xl overflow-hidden shadow-2xl mx-4">
+                <div class="carousel-track" id="consertoCarousel">
+                    <!-- As imagens serão carregadas dinamicamente pelo JavaScript -->
+                </div>
+                <button class="carousel-nav-btn prev" onclick="changeSlide('consertoCarousel', -1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-nav-btn next" onclick="changeSlide('consertoCarousel', 1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <div class="carousel-indicators" id="consertoIndicators"></div>
+                <div class="progress-bar" id="consertoProgress"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Venda -->
+    <section id="loja" class="py-20 bg-gradient-to-br from-white to-slate-50">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-8">LOJA</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
+                    <div class="bg-gradient-to-br from-amber-50 to-yellow-100 p-8 rounded-xl text-center border border-amber-200 shadow-lg">
+                        <div class="bg-gradient-to-r from-amber-500 to-yellow-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                            <i class="fas fa-star text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-4">QUALIDADE</h3>
+                        <p class="text-slate-600 leading-relaxed">Trabalhamos com as melhores marcas do mercado.</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-100 p-8 rounded-xl text-center border border-blue-200 shadow-lg">
+                        <div class="bg-gradient-to-r from-blue-500 to-indigo-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                            <i class="fas fa-credit-card text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-4">FACILIDADE</h3>
+                        <p class="text-slate-600 leading-relaxed">Parcelamento facilitado e várias formas de pagamento. Compre com comodidade e segurança.</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-fuchsia-50 to-pink-100 p-8 rounded-xl text-center border border-fuchsia-200 shadow-lg">
+                        <div class="bg-gradient-to-r from-fuchsia-500 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                            <i class="fas fa-headset text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-4">SUPORTE</h3>
+                        <p class="text-slate-600 leading-relaxed">Atendimento personalizado e suporte pós-venda. Estamos aqui para ajudar sempre que precisar.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-container rounded-xl overflow-hidden shadow-2xl mx-4 mb-12">
+                <div class="carousel-track" id="lojaCarousel">
+                    <!-- As imagens serão carregadas dinamicamente pelo JavaScript -->
+                </div>
+                <button class="carousel-nav-btn prev" onclick="changeSlide('lojaCarousel', -1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-nav-btn next" onclick="changeSlide('lojaCarousel', 1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <div class="carousel-indicators" id="lojaIndicators"></div>
+                <div class="progress-bar" id="lojaProgress"></div>
+            </div>
+
+            
+<div class="text-center mt-16">
+  <p class="text-xl font-semibold text-slate-700 mb-4">
+    Aproveite nossa loja virtual recheada de produtos!
+  </p>
+  <a href="https://wwwjvmaquinas.webloja.app" target="_blank" class="inline-flex items-center bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-8 py-4 rounded-xl transition-all shadow-xl text-xl font-semibold hover-scale">
+    <i class="fas fa-shopping-cart mr-3 text-2xl"></i>
+    ACESSAR LOJA VIRTUAL
+    <i class="fas fa-external-link-alt ml-3"></i>
+  </a>
+</div>
+
+
+<!-- Botão de Avaliação -->
+            <div class="text-center">
+                <a href="https://g.page/r/CaVfERywsTrYEBE/review" target="_blank" class="inline-flex items-center bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white px-8 py-4 rounded-xl transition-all shadow-xl text-xl font-semibold hover-scale">
+                    <i class="fas fa-star mr-3 text-2xl"></i>
+                    CONSERTO - AVALIE NOSSO SERVIÇO.
+                    <i class="fas fa-external-link-alt ml-3"></i>
+                </a>
+                <p class="mt-4 text-slate-600 text-lg">Sua opinião é muito importante para nós!.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mapa Interativo -->
+    <section id="localizacao" class="py-20 bg-gradient-to-br from-gray-100 to-slate-200">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-8">NOSSA LOCALIZAÇÃO</h2>
+                <p class="text-xl text-slate-600 max-w-3xl mx-auto">Venha nos fazer uma visita.</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12 items-start">
+                <!-- Informações de Localização -->
+                <div class="space-y-8 fade-in">
+                    <div class="bg-white rounded-2xl p-8 shadow-xl border border-gray-200">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                            <i class="fas fa-map-marker-alt text-red-500 mr-3 text-3xl"></i>
+                        </h3>
+                        <div class="space-y-4 text-lg text-slate-600">
+                            <p class="flex items-start">
+                                <i class="fas fa-building mr-3 mt-1 text-blue-500"></i>
+                                <span><strong>AV. DOM HÉLDER CÂMARA 2702-B,</strong><br>
+                                MARIA DA GRAÇA.<br>
+                                RIO DE JANEIRO / RJ.</span>
+                            </p>
+                            <p class="flex items-center">
+                                <i class="fas fa-clock mr-3 text-green-500"></i>
+                                <span>Segunda a Sexta: 8h às 17h. | Sábado: 8h às 12h. | Domingo: Fechado.</span>
+                            </p>
+                        </div>
+                    </div>
+
+
+
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="https://www.google.com/maps/dir//AV.+DOM+HELDER+CAMARA+2702-B,+MARIA+DA+GRAÇA+RIO+DE+JANEIRO+RJ" target="_blank" class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-4 rounded-xl transition-all shadow-lg text-center font-semibold hover-scale">
+                            <i class="fas fa-directions mr-2"></i>
+                            COMO CHEGAR
+                        </a>
+                        <a href="https://wa.me/5521964304240?text=Olá! Gostaria de saber sobre a localização da loja" target="_blank" class="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-4 rounded-xl transition-all shadow-lg text-center font-semibold hover-scale">
+                            <i class="fab fa-whatsapp mr-2"></i>
+                            FALAR CONOSCO
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mapa Interativo -->
+                <div class="fade-in">
+                    <div class="bg-white rounded-2xl p-4 shadow-2xl border border-gray-200">
+                        <div class="relative">
+                            <iframe 
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3674.0123456789!2d-43.2789!3d-22.8756!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997e5c8b9a1b2c3d%3A0x1234567890abcdef!2sAV.%20DOM%20HELDER%20CAMARA%202702-B%2C%20MARIA%20DA%20GRAÇA%20-%20RIO%20DE%20JANEIRO%20-%20RJ!5e0!3m2!1spt-BR!2sbr!4v1234567890123!5m2!1spt-BR!2sbr"
+                                width="100%" 
+                                height="400" 
+                                style="border:0; border-radius: 12px;" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade"
+                                class="shadow-lg">
+                            </iframe>
+                            <div class="absolute top-4 left-4 bg-white bg-opacity-95 px-3 py-2 rounded-lg shadow-lg">
+                                <p class="text-sm font-semibold text-slate-800">
+                                    <i class="fas fa-map-pin text-red-500 mr-1"></i>
+                                    J&V MÁQUINAS
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Controles do Mapa -->
+                        <div class="mt-4 flex flex-wrap gap-2 justify-center">
+                            <button onclick="openGoogleMaps()" class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-lg transition-all shadow-md text-sm font-medium">
+                                <i class="fab fa-google mr-1"></i>
+                                Abrir no Google Maps
+                            </button>
+                            <button onclick="shareLocation()" class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-lg transition-all shadow-md text-sm font-medium">
+                                <i class="fas fa-share-alt mr-1"></i>
+                                Compartilhar
+                            </button>
+                            <button onclick="copyAddress()" class="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-4 py-2 rounded-lg transition-all shadow-md text-sm font-medium">
+                                <i class="fas fa-copy mr-1"></i>
+                                Copiar Endereço
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pontos de Referência -->
+                    <div class="mt-6 bg-gradient-to-br from-green-50 to-emerald-100 rounded-xl p-6 border border-green-200 shadow-lg">
+                        <h4 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+                            <i class="fas fa-landmark text-green-600 mr-2"></i>
+                            Pontos de Referência.
+                        </h4>
+                        <div class="grid sm:grid-cols-2 gap-3 text-sm text-slate-700">
+                            <div class="flex items-center">
+                                <i class="fas fa-subway text-blue-500 mr-2"></i>
+                                <span>Próximo ao Metrô Maria da Graça.</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-bus text-orange-500 mr-2"></i>
+                                <span>Várias linhas de ônibus.</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-hospital text-red-500 mr-2"></i>
+                                <span>Próximo ao Hospital Salgado Filho.</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-shopping-cart text-purple-500 mr-2"></i>
+                                <span>Perto do Shopping Del Castilho.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contato" class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-16">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <div class="grid md:grid-cols-3 gap-12">
+                <div class="fade-in">
+                    <h3 class="text-2xl font-bold mb-4">J&V MÁQUINAS</h3>
+                    <p class="mb-4">Locação, conserto e venda de ferramentas e máquinas.</p>
+                    <div class="space-y-2">
+                        <p><i class="fas fa-map-marker-alt mr-2"></i> AV. DOM HÉLDER CÂMARA 2702-B, MARIA DA GRAÇA RIO DE JANEIRO / RJ.</p>
+                        <p><i class="fas fa-envelope mr-2"></i> jevmaquina@gmail.com</p>
+                    </div>
+                </div>
+                <div class="fade-in">
+                    <h4 class="text-xl font-semibold mb-4">Contatos</h4>
+                    <div class="space-y-3">
+                        <a href="https://wa.me/5521964304240" target="_blank" class="flex items-center hover:text-green-300 transition-colors hover-scale">
+                            <i class="fab fa-whatsapp mr-3 text-xl"></i> (21) 96430-4240
+                        </a>
+                        <a href="https://wa.me/5521995246437" target="_blank" class="flex items-center hover:text-green-300 transition-colors hover-scale">
+                            <i class="fab fa-whatsapp mr-3 text-xl"></i> (21) 99524-6437
+                        </a>
+                        <a href="https://instagram.com/jvmaquin17" target="_blank" class="flex items-center hover:text-pink-300 transition-colors hover-scale">
+                            <i class="fab fa-instagram mr-3 text-xl"></i> @jvmaquin17
+                        </a>
+                        <a href="https://www.facebook.com/JonathasValis" target="_blank" class="flex items-center hover:text-blue-300 transition-colors hover-scale">
+                            <i class="fab fa-facebook mr-3 text-xl"></i> Facebook
+                        </a>
+                    </div>
+                </div>
+                <div class="fade-in">
+                    <h4 class="text-xl font-semibold mb-4">Horário de Funcionamento</h4>
+                    <div class="space-y-2 text-sm">
+                        <p>Segunda a Sexta: 8h às 17h.</p>
+                        <p>Sábado: 8h às 12h.</p>
+                        <p>Domingo: Fechado.</p>
+                    </div>
+                    <button onclick="scrollToTop()" class="mt-4 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600 px-4 py-2 rounded-lg transition-all shadow-lg">
+                        <i class="fas fa-arrow-up mr-2"></i> Voltar ao topo
+                    </button>
+                </div>
+            </div>
+            <div class="border-t border-slate-700 mt-8 pt-8 text-center">
+                <p>&copy; 2025 J&V MÁQUINAS. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal melhorado -->
+    <div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-70 hidden z-50 flex items-center justify-center p-6">
+        <div class="bg-gradient-to-br from-white to-slate-50 rounded-2xl max-w-3xl w-full max-h-[80vh] overflow-y-auto transform transition-all shadow-2xl border border-slate-200">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 id="modalTitle" class="text-3xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent"></h3>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 text-3xl hover-scale p-2">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="modalContent" class="text-slate-600 text-lg leading-relaxed mb-8"></div>
+                <div class="flex gap-4 justify-center">
+                    <a href="https://wa.me/5521964304240" target="_blank" class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-lg transition-all shadow-lg text-lg">
+                        <i class="fab fa-whatsapp mr-2"></i> Solicitar Orçamento
+                    </a>
+                    <button onclick="closeModal()" class="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-6 py-3 rounded-lg transition-all shadow-lg text-lg">
+                        Fechar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // 📸 CONFIGURAÇÃO DAS IMAGENS - SUBSTITUA AS URLs AQUI!
+        // ========================================
+        const imageConfig = {
+            // 🎯 SEÇÃO HERO (Topo da página - slideshow principal)
+            hero: [
+                // OBS: COLOQUE O LINK DA PRIMEIRA IMAGEM DO SLIDESHOW PRINCIPAL AQUI ⬇️
+                { src: 'https://i.imgur.com/LNPWfcG.png', alt: 'J&V Máquinas Hero 1', gradient: 'from-purple-900 via-blue-900 to-indigo-900' },
+                // OBS: COLOQUE O LINK DA SEGUNDA IMAGEM DO SLIDESHOW PRINCIPAL AQUI ⬇️
+                //   { src: 'SUA_IMAGEM_HERO_2_AQUI', alt: 'J&V Máquinas Hero 2', gradient: 'from-cyan-900 via-blue-900 to-purple-900' },
+                // OBS: COLOQUE O LINK DA TERCEIRA IMAGEM DO SLIDESHOW PRINCIPAL AQUI ⬇️
+                //   { src: 'SUA_IMAGEM_HERO_3_AQUI', alt: 'J&V Máquinas Hero 3', gradient: 'from-indigo-900 via-purple-900 to-pink-900' },
+                // ➕ Para adicionar mais imagens hero, descomente e substitua:
+                // OBS: COLOQUE O LINK DA QUARTA IMAGEM DO SLIDESHOW PRINCIPAL AQUI ⬇️
+                // { src: 'SUA_IMAGEM_HERO_4_AQUI', alt: 'J&V Máquinas Hero 4', gradient: 'from-blue-900 via-indigo-900 to-purple-900' },
+                // OBS: COLOQUE O LINK DA QUINTA IMAGEM DO SLIDESHOW PRINCIPAL AQUI ⬇️
+                // { src: 'SUA_IMAGEM_HERO_5_AQUI', alt: 'J&V Máquinas Hero 5', gradient: 'from-teal-900 via-blue-900 to-indigo-900' },
+            ],
+            
+            // 🔨 CARROSSEL PRINCIPAL (Seção de Marteletes)
+            main: [
+                // OBS: COLOQUE O LINK DA PRIMEIRA IMAGEM DO CARROSSEL DE MARTELETES AQUI ⬇️
+                { src: 'https://i.imgur.com/wX1ZhHi.png', alt: 'Marteletes em ação 1' },
+                // OBS: COLOQUE O LINK DA SEGUNDA IMAGEM DO CARROSSEL DE MARTELETES AQUI ⬇️
+                { src: 'https://i.imgur.com/t48ARxb.png', alt: 'Marteletes em ação 2' },
+                // OBS: COLOQUE O LINK DA TERCEIRA IMAGEM DO CARROSSEL DE MARTELETES AQUI ⬇️
+                //{ src: 'SUA_IMAGEM_CARROSSEL_3_AQUI', alt: 'Marteletes em ação 3' },
+                // ➕ Para adicionar mais imagens do carrossel principal:
+                // OBS: COLOQUE O LINK DA QUARTA IMAGEM DO CARROSSEL DE MARTELETES AQUI ⬇️
+                // { src: 'SUA_IMAGEM_CARROSSEL_4_AQUI', alt: 'Marteletes em ação 4' },
+                // OBS: COLOQUE O LINK DA QUINTA IMAGEM DO CARROSSEL DE MARTELETES AQUI ⬇️
+                // { src: 'SUA_IMAGEM_CARROSSEL_5_AQUI', alt: 'Marteletes em ação 5' },
+            ],
+            
+            // 🔧 SEÇÃO CONSERTO (Carrossel da área de consertos)
+            conserto: [
+                // OBS: COLOQUE O LINK DA PRIMEIRA IMAGEM DA SEÇÃO CONSERTO AQUI ⬇️
+                { src: 'https://i.imgur.com/cZoEWIe.png', alt: 'Serviços de conserto 1' },
+                // OBS: COLOQUE O LINK DA SEGUNDA IMAGEM DA SEÇÃO CONSERTO AQUI ⬇️
+                //{ src: '', alt: 'Serviços de conserto 2' },
+                // OBS: COLOQUE O LINK DA TERCEIRA IMAGEM DA SEÇÃO CONSERTO AQUI ⬇️
+                { src: 'https://i.imgur.com/ly6RgWC.png', alt: 'Serviços de conserto 3' },
+                // ➕ Para adicionar mais imagens de conserto:
+                // OBS: COLOQUE O LINK DA QUARTA IMAGEM DA SEÇÃO CONSERTO AQUI ⬇️
+                // { src: 'SUA_IMAGEM_CONSERTO_4_AQUI', alt: 'Serviços de conserto 4' },
+                // OBS: COLOQUE O LINK DA QUINTA IMAGEM DA SEÇÃO CONSERTO AQUI ⬇️
+                // { src: 'SUA_IMAGEM_CONSERTO_5_AQUI', alt: 'Serviços de conserto 5' },
+            ],
+            // 🏪 SEÇÃO LOJA (Carrossel da área de vendas)
+            loja: [
+                // OBS: COLOQUE O LINK DA PRIMEIRA IMAGEM DA SEÇÃO LOJA AQUI ⬇️
+                { src: 'https://i.imgur.com/cXNjmm5.png', alt: 'Produtos da loja 1' },
+                // OBS: COLOQUE O LINK DA SEGUNDA IMAGEM DA SEÇÃO LOJA AQUI ⬇️
+                { src: 'https://i.imgur.com/UfSwctE.png', alt: 'Produtos da loja 2' },
+                // OBS: COLOQUE O LINK DA TERCEIRA IMAGEM DA SEÇÃO LOJA AQUI ⬇️
+                //{ src: 'SUA_IMAGEM_LOJA_3_AQUI', alt: 'Produtos da loja 3' },
+                // ➕ Para adicionar mais imagens da loja:
+                // OBS: COLOQUE O LINK DA QUARTA IMAGEM DA SEÇÃO LOJA AQUI ⬇️
+                // { src: 'SUA_IMAGEM_LOJA_4_AQUI', alt: 'Produtos da loja 4' },
+                // OBS: COLOQUE O LINK DA QUINTA IMAGEM DA SEÇÃO LOJA AQUI ⬇️
+                // { src: 'SUA_IMAGEM_LOJA_5_AQUI', alt: 'Produtos da loja 5' },
+            ]
+        };
+        // Sistema de carrossel automatizado melhorado
+        class AutoCarousel {
+            constructor(carouselId, interval = 4000) {
+                this.carouselId = carouselId;
+                this.interval = interval;
+                this.currentSlide = 0;
+                this.carousel = document.getElementById(carouselId);
+                this.totalSlides = 0;
+                this.isPlaying = true;
+                this.progressBar = document.getElementById(carouselId.replace('Carousel', 'Progress'));
+                this.autoPlayInterval = null;
+                this.progressInterval = null;
+                
+                this.loadImages();
+            }
+
+            loadImages() {
+                const sectionKey = this.carouselId.replace('Carousel', '').toLowerCase();
+                const images = imageConfig[sectionKey] || [];
+                
+                if (images.length === 0) {
+                    console.warn(`Nenhuma imagem configurada para ${sectionKey}`);
+                    return;
+                }
+
+                this.carousel.innerHTML = '';
+                
+                images.forEach((imageData, index) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'carousel-slide';
+                    
+                    if (sectionKey === 'hero') {
+                        slide.innerHTML = `
+                            <div class="absolute inset-0 bg-gradient-to-r ${imageData.gradient} bg-opacity-60"></div>
+                            <img src="${imageData.src}" alt="${imageData.alt}" class="absolute inset-0 w-full h-full object-cover" onerror="this.parentElement.classList.add('error-image'); this.style.display='none';">
+                        `;
+                    } else {
+                        slide.innerHTML = `
+                            <img src="${imageData.src}" alt="${imageData.alt}" class="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-contain" onerror="this.parentElement.classList.add('error-image'); this.style.display='none';">
+                        `;
+                    }
+                    
+                    this.carousel.appendChild(slide);
+                });
+
+                this.totalSlides = images.length;
+                this.createIndicators();
+                this.startAutoPlay();
+                this.updateProgressBar();
+            }
+
+            createIndicators() {
+                const indicatorsContainer = document.getElementById(this.carouselId.replace('Carousel', 'Indicators'));
+                if (indicatorsContainer && this.totalSlides > 1) {
+                    indicatorsContainer.innerHTML = '';
+                    for (let i = 0; i < this.totalSlides; i++) {
+                        const indicator = document.createElement('div');
+                        indicator.className = `indicator ${i === 0 ? 'active' : ''}`;
+                        indicator.onclick = () => this.goToSlide(i);
+                        indicatorsContainer.appendChild(indicator);
+                    }
+                }
+            }
+
+            updateCarousel() {
+                if (this.totalSlides === 0) return;
+                
+                const translateX = -this.currentSlide * 100;
+                this.carousel.style.transform = `translateX(${translateX}%)`;
+                this.updateIndicators();
+            }
+
+            updateIndicators() {
+                const indicators = document.querySelectorAll(`#${this.carouselId.replace('Carousel', 'Indicators')} .indicator`);
+                indicators.forEach((indicator, index) => {
+                    indicator.classList.toggle('active', index === this.currentSlide);
+                });
+            }
+
+            updateProgressBar() {
+                if (!this.progressBar || this.totalSlides <= 1) return;
+                
+                this.progressBar.style.width = '0%';
+                
+                if (this.progressInterval) {
+                    clearInterval(this.progressInterval);
+                }
+                
+                let progress = 0;
+                this.progressInterval = setInterval(() => {
+                    if (!this.isPlaying) {
+                        clearInterval(this.progressInterval);
+                        return;
+                    }
+                    
+                    progress += (100 / this.interval) * 50;
+                    this.progressBar.style.width = `${Math.min(progress, 100)}%`;
+                    
+                    if (progress >= 100) {
+                        clearInterval(this.progressInterval);
+                        this.progressBar.style.width = '0%';
+                        setTimeout(() => this.updateProgressBar(), 100);
+                    }
+                }, 50);
+            }
+
+            nextSlide() {
+                if (this.totalSlides <= 1) return;
+                this.currentSlide = (this.currentSlide + 1) % this.totalSlides;
+                this.updateCarousel();
+            }
+
+            prevSlide() {
+                if (this.totalSlides <= 1) return;
+                this.currentSlide = (this.currentSlide - 1 + this.totalSlides) % this.totalSlides;
+                this.updateCarousel();
+            }
+
+            goToSlide(index) {
+                if (this.totalSlides <= 1 || index < 0 || index >= this.totalSlides) return;
+                this.currentSlide = index;
+                this.updateCarousel();
+                this.resetAutoPlay();
+            }
+
+            startAutoPlay() {
+                if (this.totalSlides <= 1) return;
+                
+                if (this.autoPlayInterval) {
+                    clearInterval(this.autoPlayInterval);
+                }
+                
+                this.autoPlayInterval = setInterval(() => {
+                    if (this.isPlaying) {
+                        this.nextSlide();
+                    }
+                }, this.interval);
+            }
+
+            resetAutoPlay() {
+                this.startAutoPlay();
+                this.updateProgressBar();
+            }
+
+            pause() {
+                this.isPlaying = false;
+                if (this.progressInterval) {
+                    clearInterval(this.progressInterval);
+                }
+            }
+
+            play() {
+                this.isPlaying = true;
+                this.updateProgressBar();
+            }
+
+            destroy() {
+                if (this.autoPlayInterval) {
+                    clearInterval(this.autoPlayInterval);
+                }
+                if (this.progressInterval) {
+                    clearInterval(this.progressInterval);
+                }
+            }
+        }
+
+        // ========================================
+        // 🔨 IMAGENS DOS MARTELETES INDIVIDUAIS
+        // ========================================
+        const marteletes = [
+            {
+                id: 'martelo5k',
+                nome: 'MARTELETE 5K',
+                // OBS: COLOQUE O LINK DA IMAGEM DO MARTELETE 5K AQUI ⬇️
+                imagem: 'https://i.imgur.com/a3Cv0vH.png',
+                caracteristicas: 'Martelete de 5k ideal para trabalhos de demolição leve e precisão.',
+                uso: 'Demolição leve: remoção de azulejos, reboco e paredes pequenas. Remoção de pisos antigos e revestimentos cerâmicos. Perfuração em concreto e materiais duros com função rotação + impacto.'
+            },
+            {
+                id: 'martelo10k',
+                nome: 'MARTELETE 10k',
+                // OBS: COLOQUE O LINK DA IMAGEM DO MARTELETE 10K AQUI ⬇️
+                imagem: 'https://i.imgur.com/7YwTh88.png',
+                caracteristicas: 'Martelete de 10k para demolições médias e trabalhos robustos.',
+                uso: 'Demolição: quebra de paredes, pisos, lajes e vigas de concreto e alvenaria. Rompimento: remoção de azulejos, reboco e quebra de asfalto. Perfuração: furos em concreto para tubulações e instalações. Escavação: remoção de solo e rochas em projetos de construção.'
+            },
+            {
+                id: 'martelo16k',
+                nome: 'MARTELETE 16K',
+                // OBS: COLOQUE O LINK DA IMAGEM DO MARTELETE 16K AQUI ⬇️
+                imagem: 'https://i.imgur.com/NPTGaFF.png',
+                caracteristicas: 'Martelete de 16k com sistema de impacto robusto, mais adequado para uso vertical e trabalhos pesados que exigem mais força do operador.',
+                uso: 'Demolição de estruturas: quebra de lajes, vigas, colunas e paredes de concreto. Quebra de pisos e contrapisos para preparação de terreno. Abertura de canaletas para tubulações e fiação elétrica. Remoção de cerâmicas, azulejos e outros revestimentos. Trabalhos em fundações: romper blocos e sapatas em reformas estruturais. Perfuração em concreto e materiais resistentes.'
+            },
+            {
+                id: 'martelo30k',
+                nome: 'MARTELETE 30K',
+                // OBS: COLOQUE O LINK DA IMAGEM DO MARTELETE 30K AQUI ⬇️
+                imagem: 'https://i.imgur.com/BszJiIA.png',
+                caracteristicas: 'Martelete de 30k com alta potência de impacto, sistema antivibração e design ergonômico. Ideal para trabalhos pesados e prolongados com máxima eficiência.',
+                uso: 'Demolição: ideal para demolir paredes, pisos, lajes e construções de concreto. Perfuração: furos em concreto, tijolos e pedras para tubulações, fiação elétrica e fixações estruturais. Escavação: remoção de solo e rochas, abertura de valas e preparação de áreas para fundações. Remoção de revestimentos: azulejos, pisos e revestimentos de paredes com alta eficiência.'
+            }
+        ];
+
+        // Variável global para armazenar os carrosséis
+        let carousels = {};
+
+        // Gerar grid de marteletes automaticamente
+        function generateMartelosGrid() {
+            const grid = document.getElementById('martelosGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+            
+            marteletes.forEach(martelo => {
+                const marteloCard = document.createElement('div');
+                marteloCard.className = 'bg-white rounded-xl shadow-xl p-8 hover-scale fade-in border border-gray-100';
+                marteloCard.innerHTML = `
+                    <div class="w-full h-auto bg-gray-200 rounded-xl mb-6 overflow-hidden flex items-center justify-center max-h-64 sm:max-h-72 md:max-h-80 lg:max-h-96">
+                        <img src="${martelo.imagem}" alt="${martelo.nome}" class="w-full h-auto max-h-64 sm:max-h-80 md:max-h-96 lg:max-h-[28rem] object-contain mx-auto" onerror="this.parentElement.classList.add('error-image'); this.innerHTML='<i class=\\'fas fa-image text-4xl\\'>'; this.style.display='flex';">
+                    </div>
+                    <h4 class="text-xl font-semibold mb-4 text-slate-800">${martelo.nome}</h4>
+                    <button onclick="showDetails('${martelo.id}')" class="bg-gradient-to-r from-blue-900 to-blue-800 text-white px-6 py-3 rounded-lg hover:from-blue-800 hover:to-blue-700 transition-all w-full shadow-lg text-lg">
+                        SAIBA MAIS
+                    </button>
+                `;
+                grid.appendChild(marteloCard);
+            });
+        }
+
+        // Funções de navegação
+        function changeSlide(carouselId, direction) {
+            const carousel = carousels[carouselId];
+            if (!carousel) return;
+            
+            if (direction > 0) {
+                carousel.nextSlide();
+            } else {
+                carousel.prevSlide();
+            }
+            carousel.resetAutoPlay();
+        }
+
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        function showDetails(marteloId) {
+            const martelo = marteletes.find(m => m.id === marteloId);
+            if (!martelo) return;
+            
+            const modal = document.getElementById('detailsModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+            
+            if (modal && title && content) {
+                title.textContent = martelo.nome;
+                content.innerHTML = `
+                    <h4 class="font-semibold mb-2">Visão Geral:</h4>
+                    <p class="mb-4">${martelo.caracteristicas}</p>
+                    <h4 class="font-semibold mb-2">Uso Recomendado:</h4>
+                    <p>${martelo.uso}</p>
+                `;
+                modal.classList.remove('hidden');
+                
+                // Pausar todos os carrosséis quando modal abrir
+                Object.values(carousels).forEach(carousel => carousel.pause());
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('detailsModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                
+                // Retomar todos os carrosséis quando modal fechar
+                Object.values(carousels).forEach(carousel => carousel.play());
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar carrosséis
+            carousels = {
+                heroCarousel: new AutoCarousel('heroCarousel', 3000),
+                mainCarousel: new AutoCarousel('mainCarousel', 4000),
+                consertoCarousel: new AutoCarousel('consertoCarousel', 5000),
+                lojaCarousel: new AutoCarousel('lojaCarousel', 4500)
+            };
+
+            // Gerar grid de marteletes
+            generateMartelosGrid();
+
+            // Aplicar estilos iniciais para animações
+            document.querySelectorAll('.fade-in').forEach(element => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            });
+
+            // Executar animações iniciais
+            setTimeout(animateOnScroll, 100);
+        });
+
+        // Fechar modal clicando fora
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('detailsModal');
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Pausar carrosséis quando usuário sai da aba
+        document.addEventListener('visibilitychange', function() {
+            Object.values(carousels).forEach(carousel => {
+                if (document.hidden) {
+                    carousel.pause();
+                } else {
+                    carousel.play();
+                }
+            });
+        });
+
+        // Animações de scroll
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        }
+
+        // Event listener para scroll
+        let scrollTimeout;
+        window.addEventListener('scroll', function() {
+            if (scrollTimeout) {
+                clearTimeout(scrollTimeout);
+            }
+            scrollTimeout = setTimeout(animateOnScroll, 10);
+        });
+
+        // Cleanup ao sair da página
+        window.addEventListener('beforeunload', function() {
+            Object.values(carousels).forEach(carousel => {
+                if (carousel.destroy) {
+                    carousel.destroy();
+                }
+            });
+        });
+
+        // Funções do Mapa Interativo
+        function openGoogleMaps() {
+            const address = "AV. DOM HELDER CAMARA 2702-B, MARIA DA GRAÇA RIO DE JANEIRO RJ";
+            const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+            window.open(url, '_blank');
+        }
+
+        function shareLocation() {
+            const address = "AV. DOM HELDER CAMARA 2702-B, MARIA DA GRAÇA RIO DE JANEIRO RJ";
+            const text = `Confira a localização da J&V MÁQUINAS: ${address}`;
+            const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'J&V MÁQUINAS - Localização',
+                    text: text,
+                    url: url
+                }).catch(console.error);
+            } else {
+                // Fallback para dispositivos que não suportam Web Share API
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`;
+                window.open(whatsappUrl, '_blank');
+            }
+        }
+
+        function copyAddress() {
+            const address = "AV. DOM HELDER CAMARA 2702-B, MARIA DA GRAÇA RIO DE JANEIRO RJ";
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(address).then(() => {
+                    showNotification('Endereço copiado!', 'success');
+                }).catch(() => {
+                    fallbackCopyText(address);
+                });
+            } else {
+                fallbackCopyText(address);
+            }
+        }
+
+        function fallbackCopyText(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showNotification('Endereço copiado!', 'success');
+            } catch (err) {
+                showNotification('Erro ao copiar endereço', 'error');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function showNotification(message, type = 'info') {
+            // Remove notificação existente se houver
+            const existingNotification = document.getElementById('notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+
+            const notification = document.createElement('div');
+            notification.id = 'notification';
+            notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg text-white font-medium transform transition-all duration-300 translate-x-full`;
+            
+            if (type === 'success') {
+                notification.classList.add('bg-green-500');
+                notification.innerHTML = `<i class="fas fa-check-circle mr-2"></i>${message}`;
+            } else if (type === 'error') {
+                notification.classList.add('bg-red-500');
+                notification.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i>${message}`;
+            } else {
+                notification.classList.add('bg-blue-500');
+                notification.innerHTML = `<i class="fas fa-info-circle mr-2"></i>${message}`;
+            }
+
+            document.body.appendChild(notification);
+
+            // Animar entrada
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+
+            // Remover após 3 segundos
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Tratamento de erros globais
+        window.addEventListener('error', function(e) {
+            console.error('Erro capturado:', e.error);
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'966d34dc6258e12d',t:'MTc1Mzc5ODI5Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
